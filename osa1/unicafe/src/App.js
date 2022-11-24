@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 const Header = (props) =>{
-  console.log(props.header)
   return (
     <div>
       <h2>
@@ -39,7 +38,6 @@ const Statistic = (probs) =>{
   const neuts = probs.stats[1]
   const bads = probs.stats[2]
   const totalvotes = goods + bads + neuts
-  console.log(totalvotes)
   if (totalvotes > 0){
   return (
   <div>
