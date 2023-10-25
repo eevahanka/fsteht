@@ -9,6 +9,14 @@ return(
   </div>)
 }
 
+const Person = (props) => {
+  return(
+    <div>
+      {props.person['name']}: {props.person['number']}
+    </div>
+  )
+}
+
 const Persons = (props) => {
   // console.log(props.persons)
   const filtered = props.persons.filter((person) => person.name.toLowerCase().includes(props.filter.toLowerCase()))
@@ -18,8 +26,8 @@ const Persons = (props) => {
       <h2>Numbers</h2>
       {filtered.map((person, i) =>
       <div key={i}>
-        
-        {person['name']}: {person['number']}</div>)} 
+        <Person person={person}/>
+        </div>)} 
       </div>   
   )
 }
