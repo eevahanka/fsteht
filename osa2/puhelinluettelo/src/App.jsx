@@ -1,3 +1,4 @@
+import noteService from './services/puhelinluettelo.js'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
@@ -57,8 +58,8 @@ const App = (props) => {
   
   useEffect(() => {
     // console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
+    noteService
+      .getAll()
       .then(response => {
         // console.log('promise fulfilled')
         setPersons(response.data)
@@ -100,24 +101,13 @@ const App = (props) => {
         name: newName,
         number: newNumber,
       }
-      axios
-      .post('http://localhost:3001/persons', personObject)
+      noteService
+      .create(personObject)
       .then(response => {
-        // console.log(response)
-    // console.log(persons)
-      // const copy = [...persons]
-      // const dict = {}
-      // dict['name'] = newName
-      // dict['number'] = newNumber
-      // copy.push(dict)
-      // setPersons(copy)
-        // console.log("just before ")
         setPersons(persons.concat(response.data))
-        // console.log("just after")
         setNewName('')
         setNewNumber('')})
-      // console.log(persons)
-    }
+          }
   }
 
   return (
