@@ -11,24 +11,23 @@ return(
   </div>)
 }
 
-const Person = (props) => {
+const Person = ({ person, handleDelete }) => {
   return(
     <div>
-      {props.person['name']}: {props.person['number']}
+      {person['name']}: {person['number']} 
+      <button onClick={handleDelete}>delete</button>
     </div>
   )
 }
 
 const Persons = (props) => {
-  // console.log(props.persons)
   const filtered = props.persons.filter((person) => person.name.toLowerCase().includes(props.filter.toLowerCase()))
-  // console.log(filtered);
   return(
     <div>
       <h2>Numbers</h2>
       {filtered.map((person, i) =>
       <div key={i}>
-        <Person person={person}/>
+        <Person person={person} handleDelete={() => props.handleDelete(person.id)}/>
         </div>)} 
       </div>   
   )
@@ -57,17 +56,14 @@ const App = (props) => {
   const [newFilter, setNewFilter] = useState('')
   
   useEffect(() => {
-    // console.log('effect')
     noteService
       .getAll()
       .then(response => {
-        // console.log('promise fulfilled')
         setPersons(response.data)
       })
   }, [])
   const handleNameChange = (event) => {
     event.preventDefault()
-    // console.log("persons")
     setNewName(event.target.value)
   }
   const handleNumberChange = (event) => {
@@ -78,14 +74,26 @@ const App = (props) => {
   const handleFilterChange = (event) => {
     event.preventDefault()
     setNewFilter(event.target.value)
-    // console.log("im here boss");
+  }
+
+  const toggleDeleteOf = (id) => {
+    const persontodelete = persons.find(person => person.id === id)
+    if (window.confirm("Delete " + persontodelete.name + "?")) {
+      
+    
+      noteService
+      .del(id)
+      .then(
+        response => {
+          setPersons(persons.filter((person) => person.id !== id ))
+        }
+      )
+    }
   }
 
   const check = (newname) => {
-    // console.log('here')
     for (let i = 0; i< persons.length ; i++){
       if (JSON.stringify(persons[i]['name']) === JSON.stringify(newname)){
-        // console.log(1245)
         alert(`${newName} is already added to phonebook`)
         setNewName('')
         return false
@@ -120,10 +128,12 @@ const App = (props) => {
           <Add addPersons={addPersons} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
         </div>
       
-      <Persons persons={persons} filter={newFilter}/>
+      <Persons persons={persons}
+      filter={newFilter}
+      handleDelete={toggleDeleteOf}
+      />
     </div>
   )
-
 }
 
 export default App

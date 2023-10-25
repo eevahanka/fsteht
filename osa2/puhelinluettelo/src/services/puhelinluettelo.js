@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { object } from 'prop-types'
 const baseUrl = 'http://localhost:3001/persons'
 
 const getAll = () => {
@@ -13,8 +14,13 @@ const update = (id, newObject) => {
   return axios.put(`${baseUrl}/${id}`, newObject)
 }
 
+const del  = id => {
+  return axios.delete(`${baseUrl}/${id}`)
+}
+
 export default { 
   getAll: getAll, 
   create: create, 
-  update: update 
+  update: update,
+  del: del 
 }
