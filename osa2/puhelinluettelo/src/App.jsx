@@ -96,15 +96,26 @@ const App = (props) => {
   const addPersons = (event) => {
     event.preventDefault()
     if (check(newName)){
+      const personObject = {
+        name: newName,
+        number: newNumber,
+      }
+      axios
+      .post('http://localhost:3001/persons', personObject)
+      .then(response => {
+        // console.log(response)
     // console.log(persons)
-      const copy = [...persons]
-      const dict = {}
-      dict['name'] = newName
-      dict['number'] = newNumber
-      copy.push(dict)
-      setPersons(copy)
-      setNewName('')
-      setNewNumber('')
+      // const copy = [...persons]
+      // const dict = {}
+      // dict['name'] = newName
+      // dict['number'] = newNumber
+      // copy.push(dict)
+      // setPersons(copy)
+        // console.log("just before ")
+        setPersons(persons.concat(response.data))
+        // console.log("just after")
+        setNewName('')
+        setNewNumber('')})
       // console.log(persons)
     }
   }
