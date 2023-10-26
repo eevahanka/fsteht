@@ -122,6 +122,14 @@ const App = (props) => {
           setPersons(persons.filter((person) => person.id !== editedperson.id ).concat(response.data))
         }
       )
+      .catch(error => {
+        setNOtification(
+          `${newName} does not exist...`
+        )
+        setTimeout(() => {
+          setNOtification(null)
+        }, 5000)
+      })
     }
   }
 
