@@ -79,8 +79,6 @@ const App = (props) => {
   const toggleDeleteOf = (id) => {
     const persontodelete = persons.find(person => person.id === id)
     if (window.confirm("Delete " + persontodelete.name + "?")) {
-      
-    
       noteService
       .del(id)
       .then(
@@ -94,12 +92,24 @@ const App = (props) => {
   const check = (newname) => {
     for (let i = 0; i< persons.length ; i++){
       if (JSON.stringify(persons[i]['name']) === JSON.stringify(newname)){
-        alert(`${newName} is already added to phonebook`)
-        setNewName('')
         return false
       }
     }
     return true
+  }
+
+  const editNumber = (newName, newNumber) => {
+    if (window.confirm("edit " + newName + "'s number")) {
+      const person = persons.find(person => person.name === newName)
+      const editedperson = { ...person, number: newNumber }
+      noteService
+      .update(editedperson.id, editedperson)
+      .then(
+        response => {
+          setPersons(persons.filter((person) => person.id !== editedperson.id ).concat(response.data))
+        }
+      )
+    }
   }
 
   const addPersons = (event) => {
@@ -115,7 +125,11 @@ const App = (props) => {
         setPersons(persons.concat(response.data))
         setNewName('')
         setNewNumber('')})
-          }
+    }
+    else {
+      editNumber(newName, newNumber)
+
+    }
   }
 
   return (
