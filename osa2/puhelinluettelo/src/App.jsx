@@ -2,6 +2,18 @@ import noteService from './services/puhelinluettelo.js'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='notif'>
+      {message}
+    </div>
+  )
+}
+
 const Filter = (props) => {
 return(
   <div>
@@ -54,6 +66,7 @@ const App = (props) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notification, setNOtification] = useState(null)
   
   useEffect(() => {
     noteService
@@ -123,8 +136,16 @@ const App = (props) => {
       .create(personObject)
       .then(response => {
         setPersons(persons.concat(response.data))
+        })
+        setNOtification(
+          `added '${newName}`
+        )
+        setTimeout(() => {
+          setNOtification(null)
+        }, 5000)  
         setNewName('')
-        setNewNumber('')})
+        setNewNumber('')
+      
     }
     else {
       editNumber(newName, newNumber)
@@ -137,7 +158,10 @@ const App = (props) => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <div>
+        <Notification message={notification} />
+      </div>
       <div>
         <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       </div>
