@@ -128,6 +128,9 @@ const App = (props) => {
     }
     else {
       editNumber(newName, newNumber)
+      setNewName('')
+      setNewNumber('')
+
 
     }
   }
