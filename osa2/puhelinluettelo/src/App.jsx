@@ -1,4 +1,4 @@
-import noteService from './services/puhelinluettelo.js'
+import personService from './services/puhelinluettelo.js'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
@@ -69,7 +69,7 @@ const App = (props) => {
   const [notification, setNOtification] = useState(null)
   
   useEffect(() => {
-    noteService
+    personService
       .getAll()
       .then(response => {
         setPersons(response.data)
@@ -92,13 +92,11 @@ const App = (props) => {
   const toggleDeleteOf = (id) => {
     const persontodelete = persons.find(person => person.id === id)
     if (window.confirm("Delete " + persontodelete.name + "?")) {
-      noteService
-      .del(id)
-      .then(
-        response => {
+      console.log(typeof(id))
+      personService.del(id)
+      .then(response => {
           setPersons(persons.filter((person) => person.id !== id ))
-        }
-      )
+        } )
     }
   }
 
@@ -115,7 +113,7 @@ const App = (props) => {
     if (window.confirm("edit " + newName + "'s number")) {
       const person = persons.find(person => person.name === newName)
       const editedperson = { ...person, number: newNumber }
-      noteService
+      personService
       .update(editedperson.id, editedperson)
       .then(
         response => {
@@ -140,10 +138,16 @@ const App = (props) => {
         name: newName,
         number: newNumber,
       }
-      noteService
+      personService
       .create(personObject)
       .then(response => {
         setPersons(persons.concat(response.data))
+        })
+        .catch(error => {
+          setNOtification(
+            error.response.data.error
+          )
+
         })
         setNOtification(
           `added '${newName}`

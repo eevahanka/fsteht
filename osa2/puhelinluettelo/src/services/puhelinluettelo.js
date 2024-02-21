@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { object } from 'prop-types'
-const baseUrl = 'http://localhost:3001/persons'
+const baseUrl = 'http://localhost:3001/api/persons'
 
 const getAll = () => {
   return axios.get(baseUrl)
@@ -15,6 +15,8 @@ const update = (id, newObject) => {
 }
 
 const del  = id => {
+  console.log(typeof(id))
+  console.log(`${baseUrl}/${id}`)
   return axios.delete(`${baseUrl}/${id}`)
 }
 
