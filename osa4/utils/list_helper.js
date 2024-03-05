@@ -63,8 +63,32 @@ const mostBlogs = (blogs) => {
     return findMostCommonAuthor(authors)
 }
 
+
+
+const findMostLikedAuthor = (blogs) => {
+    const authors = removeDuplicates(blogsToAuthors(blogs))
+    var authorsAndLikes = []
+    for (author of authors) {
+        var likes = 0
+        for (blog of blogs) {
+            if (blog.author === author) {
+                likes += blog.likes
+            }
+        }
+        authorsAndLikes.push({author:author, likes:likes})
+        
+    }
+    return favouriteBlog(authorsAndLikes)
+
+}
+
+function removeDuplicates(arr) {
+    return [...new Set(arr)];
+}
+
 const mostLikes  = (blogs) => {
-    pass
+    return findMostLikedAuthor(blogs)
+
 }
 
 
