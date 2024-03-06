@@ -125,6 +125,21 @@ describe('POST', () => {
   })
 })
 
+describe('DELETE', () => {
+  test('can be deleted by id', async () => {
+    const response = await api.get('/api/blogs')
+    const blogToDelete = response.body[0]
+    
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+    const blogsAtEnd = await api.get('/api/blogs')
+    const authors = blogsAtEnd.body.map(r => r.author)
+    assert(!authors.includes(blogToDelete.author))
+    assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length - 1)
+  })
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
