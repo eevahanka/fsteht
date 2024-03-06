@@ -80,9 +80,50 @@ describe('POST', () => {
     
       assert(authors.includes('Robert C. Martin'))
   })
+  test('if likes missing assingn zero', async() => {
+    const newBlog = {
+      title: "First class tests",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+      }
+      await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+      const response = await api.get('/api/blogs')
+      const authors = response.body.map(r => r.author)
+      assert.strictEqual(response.body.length, initialBlogs.length + 1)
+      assert(authors.includes('Robert C. Martin'))
+      assert.strictEqual(response.body[2].likes, 0)
+    })
+  test('if missing title, return 400', async () => {
+    const newBlog = {
+      liks: 2,
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+      }
+      await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      const response = await api.get('/api/blogs')
+      assert.strictEqual(response.body.length, initialBlogs.length)
+  })
+  test('if missing url, return 400', async () => {
+    const newBlog = {
+      liks: 2,
+      author: "Robert C. Martin",
+      title: "pikkuakksoen posti",
+      }
+      await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      const response = await api.get('/api/blogs')
+      assert.strictEqual(response.body.length, initialBlogs.length)
+  })
 })
-
-
 
 after(async () => {
   await mongoose.connection.close()
