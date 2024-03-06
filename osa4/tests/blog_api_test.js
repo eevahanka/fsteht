@@ -129,7 +129,6 @@ describe('DELETE', () => {
   test('can be deleted by id', async () => {
     const response = await api.get('/api/blogs')
     const blogToDelete = response.body[0]
-    
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204)
@@ -137,6 +136,23 @@ describe('DELETE', () => {
     const authors = blogsAtEnd.body.map(r => r.author)
     assert(!authors.includes(blogToDelete.author))
     assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length - 1)
+  })
+})
+
+describe('PUT', () => {
+  test('can be edited by id', async () => {
+    const response = await api.get('/api/blogs')
+    const blogToEdit = response.body[0]
+    const newBlogContent = {
+    author: 'me, myself and i',
+    }
+    await api
+      .put(`/api/blogs/${blogToEdit.id}`)
+      .send(newBlogContent)
+    const blogsAtEnd = await api.get('/api/blogs')
+    const authors = blogsAtEnd.body.map(r => r.author)
+    assert(authors.includes(newBlogContent.author))
+    assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length)
   })
 })
 
