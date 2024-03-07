@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const logger = require('../utils/logger')
 
 const api = supertest(app)
@@ -23,12 +24,30 @@ const initialBlogs = [
   }
 ]
 
+const initialUsers = [
+  {
+    username: "Pentsa", 
+    name: "Pena herhe",
+    password: "salaisuus",
+  },
+  {
+    username: "Test",
+    name: "testaaja",
+    password: "testisanasala"
+  }
+]
+
 beforeEach(async () => {
   await Blog.deleteMany({})
   let blogObject = new Blog(initialBlogs[0])
   await blogObject.save()
   blogObject = new Blog(initialBlogs[1])
   await blogObject.save()
+  await User.deleteMany({})
+  let userObject = new User(initialUsers[0])
+  await userObject.save()
+  userObject = new User(initialUsers[1])
+  await userObject.save()
 })
 
 describe('blog api yleinen?', () => {
@@ -46,7 +65,9 @@ describe('blog api yleinen?', () => {
   
   test('the first blog is by Chan', async () => {
     const response = await api.get('/api/blogs')
+    logger.tprint(response.body)
     const authors = response.body.map(e => e.author)
+    logger.tprint(authors)
     assert(authors.includes('Michael Chan'))
   })
 })
@@ -153,6 +174,76 @@ describe('PUT', () => {
     const authors = blogsAtEnd.body.map(r => r.author)
     assert(authors.includes(newBlogContent.author))
     assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length)
+  })
+})
+
+describe('users', () => {
+  test('users returned as json', async () => {
+    await api
+    .get('/api/users')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+  })
+  test('Pentsa in users', async () => {
+    const response = await api.get('/api/users')
+    const users = response.body.map(e => e.username)
+    assert(users.includes('Pentsa'))
+  })
+  test('can add user', async ()=>{
+    const newUser = {
+      username: "uusi",
+      name: "uusinta",
+      password: "tosihyv"
+    }
+    await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+    const response = await api.get('/api/users')
+    const users = response.body.map(e => e.username)
+    assert(users.includes('uusi'))
+  } )
+  test('cant add same username', async () => {
+    const newUser = {
+      username: "Test",
+      name: "toinentestaaja",
+      password: "testisanasala"
+    }
+    await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+  })
+  test('must have username', async () => {
+    const newUser = {
+      name: "toinentestaaja",
+      password: "testisanasala"
+    }
+    await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+  })
+  test('must have password', async () => {
+    const newUser = {
+      name: "toinentestaaja",
+      username: "testisanasala"
+    }
+    await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+  })
+  test('password lenght more 3', async () => {
+    const newUser = {
+      name: "toinentestaaja",
+      password: "abc"
+    }
+    await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
   })
 })
 
