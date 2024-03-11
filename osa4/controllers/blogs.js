@@ -20,7 +20,7 @@ blogsRouter.post('/', async (request, response) => {
         if (!decodedToken.id) {
             return response.status(401).json({ error: 'token invalid' })
         }
-        const user = await User.findById(decodedToken.id)
+        const user = request.user
         const blog = new Blog({
             title: body.title,
             author: body.author,
@@ -40,7 +40,7 @@ blogsRouter.delete('/:id', async (request, response, next) => {
         if (!decodedToken.id) {
             return response.status(401).json({ error: 'token invalid' })
         }
-    const user = await User.findById(decodedToken.id)
+    const user = request.user
     const blog = await Blog.findById(request.params.id)
     const blogUser = blog.user
     console.log(blogUser, user.id==blogUser)
