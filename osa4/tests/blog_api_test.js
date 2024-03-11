@@ -65,9 +65,7 @@ describe('blog api yleinen?', () => {
   
   test('the first blog is by Chan', async () => {
     const response = await api.get('/api/blogs')
-    logger.tprint(response.body)
     const authors = response.body.map(e => e.author)
-    logger.tprint(authors)
     assert(authors.includes('Michael Chan'))
   })
 })
@@ -88,18 +86,18 @@ describe('POST', () => {
         url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
         likes: 10,
         }
-        await api
-        .post('/api/blogs')
-        .send(newBlog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  
+    const response = await api.get('/api/blogs')
     
-      const response = await api.get('/api/blogs')
-    
-      const authors = response.body.map(r => r.author)
-      assert.strictEqual(response.body.length, initialBlogs.length + 1)
-    
-      assert(authors.includes('Robert C. Martin'))
+    const authors = response.body.map(r => r.author)
+    assert.strictEqual(response.body.length, initialBlogs.length + 1)
+  
+    assert(authors.includes('Robert C. Martin'))
   })
   test('if likes missing assingn zero', async() => {
     const newBlog = {
