@@ -43,8 +43,6 @@ blogsRouter.delete('/:id', async (request, response, next) => {
     const user = request.user
     const blog = await Blog.findById(request.params.id)
     const blogUser = blog.user
-    console.log(blogUser, user.id==blogUser)
-    console.log(!(user.id==blogUser))
     if (!(user.id==blogUser)){
         return response.status(401).json({error: 'cant delete other users blog'})
     } else {

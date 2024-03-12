@@ -1,13 +1,18 @@
 const { test, after, describe, beforeEach } = require('node:test')
 const assert = require('node:assert')
+const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const logger = require('../utils/logger')
+const bcrypt = require('bcrypt')
 
 const api = supertest(app)
+
+const saltRounds = 10
+
 
 const initialBlogs = [
   {
@@ -24,16 +29,21 @@ const initialBlogs = [
   }
 ]
 
+const tokenUser = {
+  username: "Token", 
+  password: "salaisuus"
+}
+
 const initialUsers = [
   {
     username: "Pentsa", 
     name: "Pena herhe",
-    password: "salaisuus",
+    passwordHash: "salaisuus"
   },
   {
     username: "Test",
     name: "testaaja",
-    password: "testisanasala"
+    passwordHash: "testisalasana"
   }
 ]
 
@@ -48,6 +58,15 @@ beforeEach(async () => {
   await userObject.save()
   userObject = new User(initialUsers[1])
   await userObject.save()
+  const user = {
+    username: "Token", 
+    password: "salaisuus"
+  }
+  await api
+  .post('/api/users')
+  .send(user)
+  // const userForToken = await User.findOne({username:"Token"})
+  // const token = jwt.sign(userForToken, process.env.SECRET)
 })
 
 describe('blog api yleinen?', () => {
@@ -78,25 +97,37 @@ describe('blog id not _id', () => {
   })
 })
 
+describe('login', () => {
+  test('can login', async () => {
+    const user = {
+      username: "Token", 
+      password: "salaisuus"
+    }
+    await api
+    .post('/api/users')
+    .send(user)
+  })
+})
+
 describe('POST', () => {
   test('post adds blog', async () => {
     const newBlog = {
-        title: "First class tests",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
-        likes: 10,
-        }
+      title: "First class tests",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+      likes: 3
+      }
+    const tokenresponse = await api.post('/api/login').send(tokenUser)
+    const token = tokenresponse.body.token
     await api
     .post('/api/blogs')
+    .set("Authorization" ,`Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
-  
     const response = await api.get('/api/blogs')
-    
     const authors = response.body.map(r => r.author)
     assert.strictEqual(response.body.length, initialBlogs.length + 1)
-  
     assert(authors.includes('Robert C. Martin'))
   })
   test('if likes missing assingn zero', async() => {
@@ -105,8 +136,11 @@ describe('POST', () => {
       author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
       }
+      const tokenresponse = await api.post('/api/login').send(tokenUser)
+      const token = tokenresponse.body.token
       await api
       .post('/api/blogs')
+      .set("Authorization" ,`Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -122,8 +156,11 @@ describe('POST', () => {
       author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
       }
+      const tokenresponse = await api.post('/api/login').send(tokenUser)
+      const token = tokenresponse.body.token
       await api
       .post('/api/blogs')
+      .set("Authorization" ,`Bearer ${token}`)
       .send(newBlog)
       .expect(400)
       const response = await api.get('/api/blogs')
@@ -135,26 +172,52 @@ describe('POST', () => {
       author: "Robert C. Martin",
       title: "pikkuakksoen posti",
       }
+      const tokenresponse = await api.post('/api/login').send(tokenUser)
+      const token = tokenresponse.body.token
       await api
       .post('/api/blogs')
+      .set("Authorization" ,`Bearer ${token}`)
       .send(newBlog)
       .expect(400)
       const response = await api.get('/api/blogs')
       assert.strictEqual(response.body.length, initialBlogs.length)
   })
+  test('missing authorization', async () => {
+    const newBlog = {
+      title: "First class tests",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+      likes: 3
+      }
+      await api
+      .post('/api/blogs')
+      .set("Authorization" ,`Bearer 7878987878987898789876kjhgoignkiuhkiuygnm`)
+      .send(newBlog)
+      .expect(401)
+  })
 })
 
 describe('DELETE', () => {
   test('can be deleted by id', async () => {
-    const response = await api.get('/api/blogs')
-    const blogToDelete = response.body[0]
+    const newBlog = {
+      title: "First class tests",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+      likes: 3
+      }
+    const tokenresponse = await api.post('/api/login').send(tokenUser)
+    const token = tokenresponse.body.token
+    // const response = await api.get('/api/blogs')
+    // const blogToDelete = response.body[0]
+    const responseToDelete = await api.post('/api/blogs').set("Authorization" ,`Bearer ${token}`).send(newBlog)
     await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
+      .delete(`/api/blogs/${responseToDelete.body.id}`)
+      .set("Authorization" ,`Bearer ${token}`)
       .expect(204)
     const blogsAtEnd = await api.get('/api/blogs')
     const authors = blogsAtEnd.body.map(r => r.author)
-    assert(!authors.includes(blogToDelete.author))
-    assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length - 1)
+    assert(!authors.includes(newBlog.author))
+    assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length)
   })
 })
 
