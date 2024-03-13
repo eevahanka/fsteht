@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,6 +13,9 @@ const App = () => {
   const [newBlogTitle, setNewBlogTitle] = useState('')
   const [newBlogAuthor, setNewBlogAuthor] = useState('')
   const [newBlogUrl, setNewBlogUrl] = useState('') 
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
+
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -24,7 +29,6 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
-      // blogService.setToken(user.token)
     }
   }, [])
 
@@ -32,6 +36,10 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('loggedUser')
     setUser(null)
+    setMessage('logged out')
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   }
 
 
@@ -42,8 +50,7 @@ const App = () => {
       author: newBlogAuthor,
       url: newBlogUrl
     }
-  
-    blogService
+    try{blogService
       .create(blogObject)
         .then(returnedNote => {
         setBlogs(blogs.concat(returnedNote))
@@ -51,6 +58,16 @@ const App = () => {
         setNewBlogAuthor('')
         setNewBlogUrl('')
       })
+    setMessage('added blog')
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)}
+    catch (exception) {
+      setErrorMessage('something went wrong')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
   const handleLogin = async (event) => {
@@ -67,12 +84,16 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setMessage('logged in')
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
     } catch (exception) {
-      // setErrorMessage('Wrong credentials')
-      // setTimeout(() => {
-      //   // setErrorMessage(null)
-      // }, 5000)
-      console.log(exception)
+      setErrorMessage('Wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      // console.log(exception)
     }
   }
 
@@ -100,6 +121,8 @@ const App = () => {
   if (user === null) {
     return (
       <div>
+        <Notification message={errorMessage} />
+        <Notification message={message}/>
         <h2>Log in to application</h2>
 <form onSubmit={handleLogin}>
         <div>
@@ -128,6 +151,8 @@ const App = () => {
   }
   return (
     <div>
+      <Notification message={errorMessage} />
+      <Notification message={message}/>
       <h2>blogs</h2>
       <div> {user.username} logged in </div>  <button onClick={handleLogout}>logout</button>
       <br></br>
