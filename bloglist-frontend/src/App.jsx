@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import LoginForm from './components/loginform'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -15,6 +16,9 @@ const App = () => {
   const [newBlogUrl, setNewBlogUrl] = useState('') 
   const [errorMessage, setErrorMessage] = useState(null)
   const [message, setMessage] = useState(null)
+  const [addBlogVisible, setAddBlogVisible] = useState(false)
+  const [loginVisible, setLoginVisible] = useState(false)
+
 
 
   useEffect(() => {
@@ -36,6 +40,8 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('loggedUser')
     setUser(null)
+    setUsername('')
+    setPassword('')
     setMessage('logged out')
     setTimeout(() => {
       setMessage(null)
@@ -52,8 +58,8 @@ const App = () => {
     }
     try{blogService
       .create(blogObject)
-        .then(returnedNote => {
-        setBlogs(blogs.concat(returnedNote))
+        .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
         setNewBlogTitle('')
         setNewBlogAuthor('')
         setNewBlogUrl('')
@@ -72,32 +78,34 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
     try {
       const user = await loginService.login({
         username, password,
       })
+      console.log(user, password)
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
-      )
+      ) 
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
       setMessage('logged in')
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setErrorMessage('wrong credentials')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
-      // console.log(exception)
     }
   }
 
-  const blogForm = () => (
+  const blogForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+    return (
     <form onSubmit={addBlog}>
       <div>Blog title<input 
         value={newBlogTitle}
@@ -115,36 +123,38 @@ const App = () => {
       />
       </div>
       <button type="submit">save</button>
-    </form>  
+    </form>  )
+}
+  
+const loginForm = () => {
+  const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+  const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+  return (
+    <div>
+      <div style={hideWhenVisible}>
+        <button onClick={() => setLoginVisible(true)}>log in</button>
+      </div>
+      <div style={showWhenVisible}>
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
+        <button onClick={() => setLoginVisible(false)}>cancel</button>
+      </div>
+    </div>
   )
+}
 
   if (user === null) {
     return (
       <div>
         <Notification message={errorMessage} />
         <Notification message={message}/>
-        <h2>Log in to application</h2>
-<form onSubmit={handleLogin}>
-        <div>
-          username
-            <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-            <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
+        {loginForm()}
 </div>
 
     )
