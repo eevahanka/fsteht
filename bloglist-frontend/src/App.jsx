@@ -104,12 +104,12 @@ const App = () => {
   }
 
   const blogForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+    const hideWhenVisible = { display: addBlogVisible ? 'none' : '' }
+    const showWhenVisible = { display: addBlogVisible ? '' : 'none' }
     return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={() => setLoginVisible(true)}>add blog</button>
+        <button onClick={() => setAddBlogVisible(true)}>add blog</button>
       </div>
     <div style={showWhenVisible}>
       <BlogForm
@@ -120,8 +120,8 @@ const App = () => {
        handleAuthorChange={({ target }) => setNewBlogAuthor(target.value)}
        handleUrlChange={({ target }) => setNewBlogUrl(target.value)}
        handleSubmit={addBlog}
-
       />
+      <button onClick={() => setAddBlogVisible(false)}>cancel</button>
     </div>
     </div>
      )
