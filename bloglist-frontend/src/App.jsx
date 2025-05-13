@@ -23,9 +23,10 @@ const App = () => {
 
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    getblogs()
+    // blogService.getAll().then(blogs =>
+    //   setBlogs( blogs )
+    // )  
   }, [])
 
   useEffect(() => {
@@ -36,6 +37,12 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const getblogs = () => {
+    blogService.getAll().then(blogs =>
+      setBlogs( blogs.sort((a,b) => a.likes - b.likes) )
+    )
+  }
 
   const handleLogout = async (event) => {
     event.preventDefault()
@@ -165,9 +172,7 @@ const handlelikeof = id => {
         setErrorMessage(null)
       }, 5000)
     })
-  blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+ getblogs()
   
 }
 
