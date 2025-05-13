@@ -152,7 +152,7 @@ const loginForm = () => {
 
 const handlelikeof = id => {
   const blog = blogs.find(n=> n.id === id)
-  const changedBlog = {...blog, likes: blog.likes+=1}
+  const changedBlog = {...blog, likes: blog.likes+1}
   console.log(changedBlog)
   blogService
     .update(id, changedBlog)
@@ -160,11 +160,15 @@ const handlelikeof = id => {
       setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
     })
     .catch(error => {
-      setErrorMessage('${blog.title} was liked but something went wrong')
+      setErrorMessage(`${blog.title} was liked but something went wrong`)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
     })
+  blogService.getAll().then(blogs =>
+      setBlogs( blogs )
+    )
+  
 }
 
   if (user === null) {
