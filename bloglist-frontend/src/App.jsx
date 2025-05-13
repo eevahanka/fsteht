@@ -157,10 +157,26 @@ const loginForm = () => {
   )
 }
 
+const handledeleteof = id => {
+  const blog = blogs.find(n=> n.id === id)
+  if (!window.confirm(`Delete '${blog.title}'?`)) return
+  blogService
+    .remove(id)
+    .then(() => {
+    setBlogs(blogs.filter(blog => blog.id !== id))
+    })
+    .catch(error => {
+      setErrorMessage(`${blog.title} is not your blog!`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    })
+ getblogs()
+}
+
 const handlelikeof = id => {
   const blog = blogs.find(n=> n.id === id)
   const changedBlog = {...blog, likes: blog.likes+1}
-  console.log(changedBlog)
   blogService
     .update(id, changedBlog)
     .then(returnedBlog => {
@@ -196,7 +212,7 @@ const handlelikeof = id => {
       {blogForm()}
       <br></br>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handlelike={() => handlelikeof(blog.id)}/>
+        <Blog key={blog.id} blog={blog} handlelike={() => handlelikeof(blog.id)} handledelete={() => handledeleteof(blog.id)}/>
       )}
     </div>
   )
