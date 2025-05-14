@@ -9,12 +9,12 @@ import BlogForm from './components/blogform'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [newBlogTitle, setNewBlogTitle] = useState('')
   const [newBlogAuthor, setNewBlogAuthor] = useState('')
-  const [newBlogUrl, setNewBlogUrl] = useState('') 
+  const [newBlogUrl, setNewBlogUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [message, setMessage] = useState(null)
   const [addBlogVisible, setAddBlogVisible] = useState(false)
@@ -26,7 +26,7 @@ const App = () => {
     getblogs()
     // blogService.getAll().then(blogs =>
     //   setBlogs( blogs )
-    // )  
+    // )
   }, [])
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const App = () => {
     }
     try{blogService
       .create(blogObject)
-        .then(returnedBlog => {
+      .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
         setNewBlogTitle('')
         setNewBlogAuthor('')
@@ -93,7 +93,7 @@ const App = () => {
       console.log(user, password)
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
-      ) 
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -114,83 +114,83 @@ const App = () => {
     const hideWhenVisible = { display: addBlogVisible ? 'none' : '' }
     const showWhenVisible = { display: addBlogVisible ? '' : 'none' }
     return (
-    <div>
-      <div style={hideWhenVisible}>
-        <button onClick={() => setAddBlogVisible(true)}>add blog</button>
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setAddBlogVisible(true)}>add blog</button>
+        </div>
+        <div style={showWhenVisible}>
+          <BlogForm
+            title={newBlogTitle}
+            author={newBlogAuthor}
+            url={newBlogUrl}
+            handleTitleChange={({ target }) => setNewBlogTitle(target.value)}
+            handleAuthorChange={({ target }) => setNewBlogAuthor(target.value)}
+            handleUrlChange={({ target }) => setNewBlogUrl(target.value)}
+            handleSubmit={addBlog}
+          />
+          <button onClick={() => setAddBlogVisible(false)}>cancel</button>
+        </div>
       </div>
-    <div style={showWhenVisible}>
-      <BlogForm
-       title={newBlogTitle}
-       author={newBlogAuthor}
-       url={newBlogUrl}
-       handleTitleChange={({ target }) => setNewBlogTitle(target.value)}
-       handleAuthorChange={({ target }) => setNewBlogAuthor(target.value)}
-       handleUrlChange={({ target }) => setNewBlogUrl(target.value)}
-       handleSubmit={addBlog}
-      />
-      <button onClick={() => setAddBlogVisible(false)}>cancel</button>
-    </div>
-    </div>
-     )
-}
-  
-const loginForm = () => {
-  const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-  const showWhenVisible = { display: loginVisible ? '' : 'none' }
+    )
+  }
 
-  return (
-    <div>
-      <div style={hideWhenVisible}>
-        <button onClick={() => setLoginVisible(true)}>log in</button>
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
       </div>
-      <div style={showWhenVisible}>
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={handleLogin}
-        />
-        <button onClick={() => setLoginVisible(false)}>cancel</button>
-      </div>
-    </div>
-  )
-}
+    )
+  }
 
-const handledeleteof = id => {
-  const blog = blogs.find(n=> n.id === id)
-  if (!window.confirm(`Delete '${blog.title}'?`)) return
-  blogService
-    .remove(id)
-    .then(() => {
-    setBlogs(blogs.filter(blog => blog.id !== id))
-    })
-    .catch(error => {
-      setErrorMessage(`${blog.title} is not your blog!`)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    })
- getblogs()
-}
+  const handledeleteof = id => {
+    const blog = blogs.find(n => n.id === id)
+    if (!window.confirm(`Delete '${blog.title}'?`)) return
+    blogService
+      .remove(id)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      })
+      .catch(error => {
+        setErrorMessage(`${blog.title} is not your blog!`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
+    getblogs()
+  }
 
-const handlelikeof = id => {
-  const blog = blogs.find(n=> n.id === id)
-  const changedBlog = {...blog, likes: blog.likes+1}
-  blogService
-    .update(id, changedBlog)
-    .then(returnedBlog => {
-      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
-    })
-    .catch(error => {
-      setErrorMessage(`${blog.title} was liked but something went wrong`)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    })
- getblogs()
-  
-}
+  const handlelikeof = id => {
+    const blog = blogs.find(n => n.id === id)
+    const changedBlog = { ...blog, likes: blog.likes+1 }
+    blogService
+      .update(id, changedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      })
+      .catch(error => {
+        setErrorMessage(`${blog.title} was liked but something went wrong`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
+    getblogs()
+
+  }
 
   if (user === null) {
     return (
@@ -198,7 +198,7 @@ const handlelikeof = id => {
         <Notification message={errorMessage} />
         <Notification message={message}/>
         {loginForm()}
-</div>
+      </div>
 
     )
   }
