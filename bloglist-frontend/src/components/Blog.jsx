@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, handlelike, handledelete }) => {
+const Blog = ({ blog, handlelike, handledelete, showDelete }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const toggleDetails = () => {
@@ -19,7 +19,10 @@ const Blog = ({ blog, handlelike, handledelete }) => {
           <div>{blog.url}</div>
           <div>{blog.likes} likes <button onClick={handlelike}>like</button></div>
           <div>{blog.user?.name}</div>
-          <div> <button onClick={handledelete}>delete</button></div>
+          {showDelete && (
+            <div> <button onClick={handledelete}>delete</button></div>
+          )}
+
         </div>
       )}
     </div>

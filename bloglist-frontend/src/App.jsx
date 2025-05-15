@@ -191,6 +191,10 @@ const App = () => {
 
   }
 
+  const blogowner = blog => {
+    return (user.id === blog.user)
+  }
+
   if (user === null) {
     return (
       <div>
@@ -211,7 +215,7 @@ const App = () => {
       {blogForm()}
       <br></br>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handlelike={() => handlelikeof(blog.id)} handledelete={() => handledeleteof(blog.id)}/>
+        <Blog key={blog.id} blog={blog} handlelike={() => handlelikeof(blog.id)} handledelete={() => handledeleteof(blog.id)} showDelete={blogowner(blog)}/>
       )}
     </div>
   )
