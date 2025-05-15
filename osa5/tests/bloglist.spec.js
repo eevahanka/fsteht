@@ -39,4 +39,22 @@ describe('Blog app', () => {
       await expect(page.getByText('wrong credentials')).toBeVisible()
     })
   })
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByRole('button', { name: 'log in' }).click()
+      await page.getByTestId('username').fill('tester')
+      await page.getByTestId('password').fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click() 
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'add blog' }).click()
+      await page.pause()
+      await page.getByPlaceholder('blog name').fill('automaatti testaus');
+      await page.getByPlaceholder('blog author').fill('emt');
+      await page.getByPlaceholder('url').fill('www.auto.fi');
+      await page.getByRole('button', { name: 'add' }).click()
+      await expect(page.getByText('automaatti testaus – emt')).toBeVisible()
+    })
+})
   })
