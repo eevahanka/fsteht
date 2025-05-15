@@ -30,8 +30,13 @@ describe('Blog app', () => {
       await expect(page.getByText('tester logged in')).toBeVisible()
     })
 
-    // test('fails with wrong credentials', async ({ page }) => {
-    //   // ...
-    // })
+    test('fails with wrong credentials', async ({ page }) => {
+      await page.getByTestId('username').fill('tester')
+      await page.getByTestId('password').fill('vaara')
+  
+      await page.getByRole('button', { name: 'login' }).click() 
+  
+      await expect(page.getByText('wrong credentials')).toBeVisible()
+    })
   })
   })
