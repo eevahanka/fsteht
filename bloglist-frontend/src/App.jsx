@@ -40,7 +40,7 @@ const App = () => {
 
   const getblogs = () => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs.sort((a,b) => a.likes - b.likes) )
+      setBlogs( blogs.sort((a,b) => a.likes - b.likes).reverse() )
     )
   }
 
@@ -192,7 +192,6 @@ const App = () => {
   }
 
   const blogowner = blog => {
-    console.log(blog.user.username === user.username)
     return (blog.user.username === user.username)
   }
 

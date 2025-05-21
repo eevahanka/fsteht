@@ -102,7 +102,31 @@ describe('Blog app', () => {
             await blogelement.getByRole('button', { name: 'show' }).click()
             await expect(page.getByRole('button', {name: 'delete'})).not.toBeVisible()
 
-    })
+        })
+        test('blogs are sorted by likes', async ({ page, request }) => {
+            await page.getByPlaceholder('blog name').fill('second blog');
+            await page.getByPlaceholder('blog author').fill('author2');
+            await page.getByPlaceholder('url').fill('www.second.com');
+            await page.getByRole('button', { name: 'add' }).click()
+            for (const s of await page.getByRole('button', { name: 'show' }).all())
+                await s.click();
+            const likes = await page.getByRole('button', {name: 'like'}).all()
+            await likes[1].click()
+            const updatedBlogs = await page.locator('div[style*="border: 1px solid black"]').all()
+            const likesList = []
+            for (const blog of updatedBlogs) {
+                const text = await blog.innerText()
+                const match = text.match(/(\d+)\s+likes/)
+                if (match) {
+                likesList.push(parseInt(match[1]))
+                }
+            }
+            const sorted = [...likesList].sort((a, b) => b - a)
+            expect(likesList).toEqual(sorted)
+        
+            })
+       })  
+        
         })
     })
-})
+

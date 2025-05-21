@@ -12,7 +12,7 @@ const Blog = ({ blog, handlelike, handledelete, showDelete }) => {
     <div style={{ marginBottom: '3px', padding: '3px', border: '1px solid black' }}>
       <div>
         {blog.title} – {blog.author}
-        <button onClick={toggleDetails}>{showDetails ? 'hide' : 'show'}</button>
+        <button onClick={toggleDetails}>{showDetails ? 'show' : 'show'}</button>
       </div>
       {showDetails && (
         <div>
