@@ -192,7 +192,8 @@ const App = () => {
   }
 
   const blogowner = blog => {
-    return (user.id === blog.user)
+    console.log(blog.user.username === user.username)
+    return (blog.user.username === user.username)
   }
 
   if (user === null) {

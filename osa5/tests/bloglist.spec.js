@@ -62,6 +62,7 @@ describe('Blog app', () => {
       await page.getByPlaceholder('blog author').fill('emt');
       await page.getByPlaceholder('url').fill('www.auto.fi');
       await page.getByRole('button', { name: 'add' }).click()
+
     })
         test('a blog can be liked', async ({ page }) => {
             const blogelement = await page.getByText('automaatti testaus');
@@ -71,6 +72,7 @@ describe('Blog app', () => {
             await expect(likeelement.getByText('1 likes')).toBeVisible()
         })
         test('a blog can be deleted', async ({ page }) => {
+            await page.reload()
             const blogelement = await page.getByText('automaatti testaus');
             await blogelement.getByRole('button', { name: 'show' }).click()
             await page.on('dialog', dialog => dialog.accept());
@@ -79,18 +81,20 @@ describe('Blog app', () => {
             await expect(page.getByText('automaatti testaus – emt')).not.toBeVisible()
         })
         test('blogs adder can see delete button', async ({ page }) => {
+            await page.reload()
             const blogelement = await page.getByText('automaatti testaus');
             await blogelement.getByRole('button', { name: 'show' }).click()
-            await expect(page.getByRole('button', {name: 'delete'})).toBeVisible
+            await expect(page.getByRole('button', {name: 'delete'})).toBeVisible()
         })
         test('non adder user cannot see delete button', async ({ page, request }) => {
+            await page.reload()
             await request.post('http://localhost:3003/api/users', {
                  data: {
                 username: 'huijari',
                 password: 'salainen'
                 }})
             await page.getByRole('button', {name: 'logout'}).click()
-            // await page.getByRole('button', { name: 'log in' }).click()
+            await page.getByRole('button', { name: 'log in' }).click()
             await page.getByTestId('username').fill('huijari')
             await page.getByTestId('password').fill('salainen')
             await page.getByRole('button', { name: 'login' }).click() 
