@@ -47,7 +47,6 @@ export const createAne = (content) => {  return {
 }
 
 export const voteAne = (id) => {  
-  console.log('voteAne', id)
   return {
     type: 'VOTE',
     payload: { id }
