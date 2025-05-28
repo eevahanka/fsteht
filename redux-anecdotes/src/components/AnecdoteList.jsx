@@ -16,8 +16,24 @@ const Ane = ({ anecdote, handleClick }) => {
 
 const AnecdoteList = () => {
     const dispatch = useDispatch()
-    const anes = useSelector(state => state)
-
+    const anes = useSelector(state => state.anes)
+    const filter = useSelector(state => state.filter)
+    if (filter){
+        return (
+        <div>
+            {anes
+            .filter(ane => ane.content.toLowerCase().includes(filter.toLowerCase()))
+            .slice()
+            .sort((a, b) => b.votes - a.votes)
+            .map(anecdote =>
+                <Ane 
+                    key={anecdote.id} 
+                    anecdote={anecdote} 
+                    handleClick={() => dispatch(voteAne(anecdote.id))} 
+                />
+            )}
+        </div>)
+    }
     return (
         <div>
             {anes
@@ -31,6 +47,7 @@ const AnecdoteList = () => {
                 />
             )}
         </div>
-    )}
+    )
+}
 
 export default AnecdoteList

@@ -1,10 +1,12 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import AnecdoteList from './components/AnecdoteList'
+import Filter from './components/filter'
 
 const App = () => {
 
   return (
     <div>
+      <Filter />
       <h2>Anecdotes</h2>
       <AnecdoteList />
       <h2>create new</h2>
