@@ -20,38 +20,62 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-const aneReducer = (state = initialState, action) => {
-  switch(action.type) {
-    case 'VOTE':
+const aneSlice = createSlice({
+  name: 'aneReducer',
+  initialState,
+  reducers: {
+    voteAne(state, action) {
+      const id = action.payload
+      const anecdoteToVote = state.find(a => a.id === id)
+      const votedAne = { ...anecdoteToVote, votes: anecdoteToVote.votes + 1 }
       return state.map(anecdote =>
-        anecdote.id === action.payload.id
-          ? { ...anecdote, votes: anecdote.votes + 1 }
-          : anecdote
+        anecdote.id !== id ? anecdote : votedAne
       )
-      case 'NEW_ANE':
-      return [...state, action.payload]
-    default:
-      return state
-  }
-
-  
-}
-
-export const createAne = (content) => {  return {
-    type: 'NEW_ANE',
-    payload: {
-      content,
-      votes: 0,
-      id: getId()
+    },
+    createAne(state, action) {
+      const content = action.payload
+      state.push({
+        content,
+        id: getId(),
+        votes: 0
+      })
     }
   }
-}
+})
 
-export const voteAne = (id) => {  
-  return {
-    type: 'VOTE',
-    payload: { id }
-  }
-}
+// const aneReducer = (state = initialState, action) => {
+//   switch(action.type) {
+//     case 'VOTE':
+//       return state.map(anecdote =>
+//         anecdote.id === action.payload.id
+//           ? { ...anecdote, votes: anecdote.votes + 1 }
+//           : anecdote
+//       )
+//       case 'NEW_ANE':
+//       return [...state, action.payload]
+//     default:
+//       return state
+//   }
 
-export default aneReducer
+  
+// }
+
+// export const createAne = (content) => {  return {
+//     type: 'NEW_ANE',
+//     payload: {
+//       content,
+//       votes: 0,
+//       id: getId()
+//     }
+//   }
+// }
+
+// export const voteAne = (id) => {  
+//   return {
+//     type: 'VOTE',
+//     payload: { id }
+//   }
+// }
+
+export default aneSlice.reducer
+export const { voteAne, createAne } = aneSlice.actions
