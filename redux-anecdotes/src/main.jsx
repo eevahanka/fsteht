@@ -7,6 +7,7 @@ import aneReducer from './reducers/anecdoteReducer'
 import filterReducer from './reducers/filterReducer'
 import notifReducer from './reducers/notificationReducer'
 
+
 const store = configureStore({
   reducer: {
     anes: aneReducer,

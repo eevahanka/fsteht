@@ -9,7 +9,7 @@ const Notification = () => {
     borderWidth: 1
   }
   const notifs = useSelector(state => state.notifs)
-  console.log('Notification', notifs)
+
   if (notifs) {
     return (
       <div style={style}>
