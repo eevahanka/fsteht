@@ -43,39 +43,7 @@ const aneSlice = createSlice({
   }
 })
 
-// const aneReducer = (state = initialState, action) => {
-//   switch(action.type) {
-//     case 'VOTE':
-//       return state.map(anecdote =>
-//         anecdote.id === action.payload.id
-//           ? { ...anecdote, votes: anecdote.votes + 1 }
-//           : anecdote
-//       )
-//       case 'NEW_ANE':
-//       return [...state, action.payload]
-//     default:
-//       return state
-//   }
 
-  
-// }
-
-// export const createAne = (content) => {  return {
-//     type: 'NEW_ANE',
-//     payload: {
-//       content,
-//       votes: 0,
-//       id: getId()
-//     }
-//   }
-// }
-
-// export const voteAne = (id) => {  
-//   return {
-//     type: 'VOTE',
-//     payload: { id }
-//   }
-// }
 
 export default aneSlice.reducer
 export const { voteAne, createAne } = aneSlice.actions

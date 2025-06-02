@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
+import { use } from "react"
 
 
 const Notification = () => {
@@ -7,12 +8,12 @@ const Notification = () => {
     padding: 10,
     borderWidth: 1
   }
-  const notif = useSelector(state => state.notif)
-
-  if (notif) {
+  const notifs = useSelector(state => state.notifs)
+  console.log('Notification', notifs)
+  if (notifs) {
     return (
       <div style={style}>
-        {notif}
+        {notifs}
       </div>
     )
   }
