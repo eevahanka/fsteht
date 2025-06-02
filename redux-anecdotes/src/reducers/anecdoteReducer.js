@@ -32,11 +32,12 @@ const aneSlice = createSlice({
     },
     createAne(state, action) {
       const content = action.payload
-      state.push({
-        content,
-        id: getId(),
-        votes: 0
-      })
+      state.push(action.payload)
+      // state.push({
+      //   content,
+      //   id: getId(),
+      //   votes: 0
+      // })
     },
     setAnes(state, action) {
       return action.payload
