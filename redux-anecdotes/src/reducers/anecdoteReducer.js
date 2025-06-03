@@ -50,4 +50,12 @@ export const initializeAnes = () => {
   }
 }
 
+export const createNewAne = content => {
+  return async dispatch => {
+    const newAne = await anecdoteService.createNew(content)
+    dispatch(createAne(newAne))
+  }
+}
+
+
 export default aneSlice.reducer
