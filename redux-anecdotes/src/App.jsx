@@ -4,16 +4,15 @@ import Filter from './components/filter'
 import Notification from './components/Notification'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { setAnes } from './reducers/anecdoteReducer'
+import { initializeAnes, setAnes } from './reducers/anecdoteReducer'
 import anecdoteService from './services/anecdotes'
 import { use } from 'react'
 
 const App = () => {
   const dispatch = useDispatch()
   useEffect(() => {
-    anecdoteService
-    .getAll().then(anecdotes => dispatch(setAnes(anecdotes)))
-  }, [])
+    dispatch(initializeAnes())
+  },[])
 
   return (
     <div>
