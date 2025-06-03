@@ -3,14 +3,20 @@ import axios from 'axios'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { getAnecdotes, updateAnecdote} from './request'
+import { useNotification } from './notificationContext'
 
 const App = () => {
   const queryClient = useQueryClient()
+  const [ , notificationDispatch ] = useNotification()
   const handleVote = (anecdote) => {
     updateAnecdoteMutation.mutate({
       ...anecdote,
       votes: anecdote.votes + 1
     })
+    notificationDispatch({ type: 'SET', payload: `You voted '${anecdote.content}'` })
+    setTimeout(() => {
+      notificationDispatch({ type: 'CLEAR' })
+    }, 5000)
   }
   const updateAnecdoteMutation = useMutation(
     {mutationFn: updateAnecdote,
@@ -21,6 +27,7 @@ const App = () => {
     queryKey: ['anecdotes'],
     queryFn: getAnecdotes
   })
+
   if ( result.isLoading ) {
     return <div>loading data...</div>
   }
@@ -28,8 +35,6 @@ const App = () => {
     return <div>anecdote service not available due to problems in server</div>
   }
   const anecdotes = result.data
-
-  
 
   return (
     <div>
