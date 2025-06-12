@@ -6,11 +6,12 @@ import blogForm from './components/blogform'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/blogform'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { notification } from './reducers/notificationReducer'
+import { initializeBlogs, createNewBlog } from './reducers/blogReducer'
+
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -25,7 +26,7 @@ const App = () => {
 
   useEffect(() => {
     getblogs()
-  }, [])
+  })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -36,13 +37,11 @@ const App = () => {
     }
   }, [])
 
-  const getblogs = () => {
-    blogService
-      .getAll()
-      .then((blogs) =>
-        setBlogs(blogs.sort((a, b) => a.likes - b.likes).reverse())
-      )
-  }
+  const getblogs =  () => {
+    dispatch(initializeBlogs())}
+
+  const blogs = useSelector(state => state.blogs)
+
 
   const handleLogout = async (event) => {
     event.preventDefault()
