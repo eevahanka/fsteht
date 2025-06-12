@@ -172,7 +172,7 @@ const App = () => {
 
   const handlelikeof = (id) => {
     const blog = blogs.find((n) => n.id === id)
-    const changedBlog = { ...blog, likes: blog.likes + 1 }
+    const changedBlog = { ...blog, likes: blog.likes + 1, user: typeof blog.user === 'object' && blog.user !== null ? blog.user.id : blog.user }
     blogService
       .update(id, changedBlog)
       .then((returnedBlog) => {
