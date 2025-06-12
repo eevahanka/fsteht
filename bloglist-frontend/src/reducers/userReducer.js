@@ -28,7 +28,7 @@ export const logoutUser = () => {
   return async (dispatch) => {
     dispatch(clearUser())
     window.localStorage.removeItem('loggedUser')
-    blogService.setToken(null) 
+    blogService.setToken(null)
   }
 }
 export const getUser = () => {

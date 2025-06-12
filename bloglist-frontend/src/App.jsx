@@ -6,6 +6,7 @@ import blogForm from './components/blogform'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/blogform'
+import Userlist from './components/Userlist'
 import { useDispatch, useSelector } from 'react-redux'
 import { notification } from './reducers/notificationReducer'
 import {
@@ -15,6 +16,7 @@ import {
   deleteBlog,
 } from './reducers/blogReducer'
 import { setUser, loginUser, logoutUser } from './reducers/userReducer'
+import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -30,8 +32,8 @@ const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    getblogs()
-  })
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -42,12 +44,17 @@ const App = () => {
     }
   }, [])
 
+  useEffect(() => {
+    dispatch(initializeUsers())
+  }, [dispatch])
+
   const getblogs = () => {
     dispatch(initializeBlogs())
   }
 
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
+  const users = useSelector((state) => state.users)
   // console.log('user', user)
 
   const handleLogout = async (event) => {
@@ -65,7 +72,6 @@ const App = () => {
       title: newBlogTitle,
       author: newBlogAuthor,
       url: newBlogUrl,
-      
     }
     try {
       dispatch(createNewBlog(blogObject)).then((returnedBlog) => {
@@ -85,13 +91,12 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      await dispatch(loginUser({username, password}))
+      await dispatch(loginUser({ username, password }))
       setUsername('')
       setPassword('')
       dispatch(notification(`Welcome ${username}`, 5))
       getblogs()
     } catch (exception) {
-      console.error('Login failed:', exception)
       dispatch(notification('Wrong username or password', 5))
     }
   }
@@ -199,6 +204,7 @@ const App = () => {
           showDelete={blogowner(blog)}
         />
       ))}
+      <Userlist users={users} />
     </div>
   )
 }

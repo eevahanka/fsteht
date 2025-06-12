@@ -13,7 +13,7 @@ const create = async (newObject) => {
   }
   console.log('newObject', newObject)
   console.log('config', config)
-  
+
   const response = await axios.post(baseUrl, newObject, config)
   return response.data
 }
