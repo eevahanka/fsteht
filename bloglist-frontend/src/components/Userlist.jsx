@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 const Userlist = ({ users }) => {
   if (!users || users.length === 0) {
@@ -8,12 +9,12 @@ const Userlist = ({ users }) => {
   return (
     <div>
       <h2>Users</h2>
-      {users.map((user) => (
-        <div key={user.id}>
-          <h3>{user.name}</h3>
+      {users.map((user1) => (
+        <div key={user1.id}>
+          <Link to={`/users/${user1.id}`}>{user1.username}</Link>
           <div>added blogs</div>
           <ul>
-            {user.blogs.map((blog) => (
+            {user1.blogs.map((blog) => (
               <li key={blog.id}>{blog.title}</li>
             ))}
           </ul>

@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import LoginForm from './components/loginform'
-import blogForm from './components/blogform'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/blogform'
 import Userlist from './components/Userlist'
+import User from './components/user'
 import { useDispatch, useSelector } from 'react-redux'
 import { notification } from './reducers/notificationReducer'
 import {
@@ -17,16 +17,15 @@ import {
 } from './reducers/blogReducer'
 import { setUser, loginUser, logoutUser } from './reducers/userReducer'
 import { initializeUsers } from './reducers/usersReducer'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  // const [user, setUser] = useState(null)
   const [newBlogTitle, setNewBlogTitle] = useState('')
   const [newBlogAuthor, setNewBlogAuthor] = useState('')
   const [newBlogUrl, setNewBlogUrl] = useState('')
-  // const [errorMessage, setErrorMessage] = useState(null)
-  // const [message, setMessage] = useState(null)
   const [addBlogVisible, setAddBlogVisible] = useState(false)
   const [loginVisible, setLoginVisible] = useState(false)
   const dispatch = useDispatch()
@@ -39,7 +38,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      dispatch(setUser(user)) // Set user in Redux store
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
   }, [])
@@ -176,34 +175,52 @@ const App = () => {
     return blog.user.username === user.username
   }
 
-  if (user === null) {
+  const UserById = ({ users }) => {
+  const { id } = useParams()
+  const user = users.find(u => u.id === id)
+  return <User user={user} users={users} />
+}
+
+  const Home = () => {
+    if (user === null) {
+      return (
+        <div>
+          <Notification />
+          {loginForm()}
+        </div>
+      )
+    }
     return (
       <div>
         <Notification />
-        {loginForm()}
+        <h2>blogs</h2>
+        <div> {user.username} logged in </div>{' '}
+        <button onClick={handleLogout}>logout</button>
+        <br></br>
+        {blogForm()}
+        <br></br>
+        {blogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handlelike={() => handlelikeof(blog.id)}
+            handledelete={() => handledeleteof(blog.id)}
+            showDelete={blogowner(blog)}
+          />
+        ))}
+        <Userlist users={users} />
       </div>
     )
   }
+
   return (
-    <div>
-      <Notification />
-      <h2>blogs</h2>
-      <div> {user.username} logged in </div>{' '}
-      <button onClick={handleLogout}>logout</button>
-      <br></br>
-      {blogForm()}
-      <br></br>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handlelike={() => handlelikeof(blog.id)}
-          handledelete={() => handledeleteof(blog.id)}
-          showDelete={blogowner(blog)}
-        />
-      ))}
-      <Userlist users={users} />
-    </div>
+    <Router>
+      <div> <Link to="/">home</Link></div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/users/:id" element={<UserById users={users} />} />
+      </Routes>
+    </Router>
   )
 }
 
