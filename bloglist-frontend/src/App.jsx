@@ -8,12 +8,18 @@ import loginService from './services/login'
 import BlogForm from './components/blogform'
 import { useDispatch, useSelector } from 'react-redux'
 import { notification } from './reducers/notificationReducer'
-import { initializeBlogs, createNewBlog, updateExistingBlog, deleteBlog } from './reducers/blogReducer'
+import {
+  initializeBlogs,
+  createNewBlog,
+  updateExistingBlog,
+  deleteBlog,
+} from './reducers/blogReducer'
+import { setUser, loginUser, logoutUser } from './reducers/userReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  // const [user, setUser] = useState(null)
   const [newBlogTitle, setNewBlogTitle] = useState('')
   const [newBlogAuthor, setNewBlogAuthor] = useState('')
   const [newBlogUrl, setNewBlogUrl] = useState('')
@@ -31,7 +37,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(setUser(user)) // Set user in Redux store
       blogService.setToken(user.token)
     }
   }, [])
@@ -41,22 +47,25 @@ const App = () => {
   }
 
   const blogs = useSelector((state) => state.blogs)
+  const user = useSelector((state) => state.user)
+  // console.log('user', user)
 
   const handleLogout = async (event) => {
     event.preventDefault()
-    window.localStorage.removeItem('loggedUser')
-    setUser(null)
+    dispatch(logoutUser())
     setUsername('')
     setPassword('')
     dispatch(notification('logged out', 5))
   }
 
   const addBlog = (event) => {
+    console.log('user', user)
     event.preventDefault()
     const blogObject = {
       title: newBlogTitle,
       author: newBlogAuthor,
       url: newBlogUrl,
+      
     }
     try {
       dispatch(createNewBlog(blogObject)).then((returnedBlog) => {
@@ -76,20 +85,15 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      })
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
+      await dispatch(loginUser({username, password}))
       setUsername('')
       setPassword('')
-      dispatch(notification(`Welcome ${user.username}`, 5))
+      dispatch(notification(`Welcome ${username}`, 5))
+      getblogs()
     } catch (exception) {
+      console.error('Login failed:', exception)
       dispatch(notification('Wrong username or password', 5))
     }
-    getblogs()
   }
 
   const blogForm = () => {
@@ -160,19 +164,9 @@ const App = () => {
           ? blog.user.id
           : blog.user,
     }
-    dispatch(updateExistingBlog(changedBlog))
-      .catch((error) => {
-        dispatch(notification(`Error liking blog: ${blog.title}`, 5))
-      })
-    // blogService
-    //   .update(id, changedBlog)
-    //   .then((returnedBlog) => {
-    //     setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
-    //   })
-    //   .catch((error) => {
-    //     dispatch(notification(`Error liking blog: ${blog.title}`, 5))
-    //   })
-    // getblogs()
+    dispatch(updateExistingBlog(changedBlog)).catch((error) => {
+      dispatch(notification(`Error liking blog: ${blog.title}`, 5))
+    })
   }
 
   const blogowner = (blog) => {
