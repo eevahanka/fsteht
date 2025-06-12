@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 const Persons = (props) => {
-  // console.log(props.persons)
   return(
     <div>
       <h2>
@@ -58,10 +57,8 @@ const App = () => {
 // JSON.stringify(a) === JSON.stringify(b))
 
   const check = (newname) => {
-    console.log('here')
     for (let i = 0; i< persons.length ; i++){
       if (JSON.stringify(persons[i]['name']) === JSON.stringify(newname)){
-        console.log(1245)
         alert(`${newName} is already added to phonebook`)
         setNewName('')
         return false
@@ -73,7 +70,6 @@ const App = () => {
   const addPersons = (event) => {
     event.preventDefault()
     if (check(newName)){
-    // console.log(persons)
       const copy = [...persons]
       const dict = {}
       dict['name'] = newName
@@ -83,7 +79,6 @@ const App = () => {
       setNewName('')
       setNewNumber('')}
   }
-  // console.log('hello')
   return (
     <div>
       <h1>Phonebook</h1>

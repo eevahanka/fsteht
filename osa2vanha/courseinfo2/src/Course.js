@@ -1,5 +1,4 @@
 const Total = (props) => {
-    console.log(props.total)
     return(
       <div>
         <p>
@@ -20,7 +19,6 @@ const Total = (props) => {
   }
 
   const Content = (props) => {
-    console.log(props)
     return (
       <div>
         {props.parts.map((part, i) =>
@@ -33,7 +31,6 @@ const Total = (props) => {
   }
 
   const Course = (props) =>{
-    console.log(props)
     return(
       <div>
         <h3>

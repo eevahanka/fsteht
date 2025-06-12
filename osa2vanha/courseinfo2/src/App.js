@@ -12,7 +12,6 @@ const Header = (props) =>{
 
 
 const Courses = (props) => {
-  console.log(props)
   return(
     <div>
       <Header header={'WEb development'}/>

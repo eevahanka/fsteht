@@ -92,7 +92,6 @@ const App = (props) => {
   const toggleDeleteOf = (id) => {
     const persontodelete = persons.find(person => person.id === id)
     if (window.confirm("Delete " + persontodelete.name + "?")) {
-      console.log(typeof(id))
       personService.del(id)
       .then(response => {
           setPersons(persons.filter((person) => person.id !== id ))

@@ -55,7 +55,6 @@ const App = () => {
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
   const users = useSelector((state) => state.users)
-  // console.log('user', user)
 
   const handleLogout = async (event) => {
     event.preventDefault()
@@ -66,7 +65,6 @@ const App = () => {
   }
 
   const addBlog = (event) => {
-    console.log('user', user)
     event.preventDefault()
     const blogObject = {
       title: newBlogTitle,

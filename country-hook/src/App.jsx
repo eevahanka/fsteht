@@ -38,9 +38,6 @@ const useCountry = (name) => {
         })
       })
   })
-  // console.log('country', country)
-  // if (country) {
-  // console.log('name', country.data.name.common)}
   return country
 }
 
