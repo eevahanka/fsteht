@@ -6,6 +6,8 @@ import blogForm from './components/blogform'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/blogform'
+import { useDispatch } from 'react-redux'
+import { notification } from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -15,16 +17,14 @@ const App = () => {
   const [newBlogTitle, setNewBlogTitle] = useState('')
   const [newBlogAuthor, setNewBlogAuthor] = useState('')
   const [newBlogUrl, setNewBlogUrl] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [message, setMessage] = useState(null)
+  // const [errorMessage, setErrorMessage] = useState(null)
+  // const [message, setMessage] = useState(null)
   const [addBlogVisible, setAddBlogVisible] = useState(false)
   const [loginVisible, setLoginVisible] = useState(false)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     getblogs()
-    // blogService.getAll().then(blogs =>
-    //   setBlogs( blogs )
-    // )
   }, [])
 
   useEffect(() => {
@@ -50,10 +50,7 @@ const App = () => {
     setUser(null)
     setUsername('')
     setPassword('')
-    setMessage('logged out')
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
+    dispatch(notification('logged out', 5))
   }
 
   const addBlog = (event) => {
@@ -70,16 +67,9 @@ const App = () => {
         setNewBlogAuthor('')
         setNewBlogUrl('')
       })
-      setMessage('added blog')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(notification(`a new blog ${newBlogTitle} by ${newBlogAuthor} added`, 5))
     } catch (exception) {
-      setErrorMessage('something went wrong')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
+      dispatch(notification('Error adding blog', 5))    }
   }
 
   const handleLogin = async (event) => {
@@ -94,15 +84,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setMessage('logged in')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(notification(`Welcome ${user.username}`, 5))
     } catch (exception) {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(notification('Wrong username or password', 5))
     }
   }
 
@@ -162,27 +146,28 @@ const App = () => {
         setBlogs(blogs.filter((blog) => blog.id !== id))
       })
       .catch((error) => {
-        setErrorMessage(`${blog.title} is not your blog!`)
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
+        dispatch(notification(`Error deleting blog: ${blog.title} is not your blog`, 5))
       })
     getblogs()
   }
 
   const handlelikeof = (id) => {
     const blog = blogs.find((n) => n.id === id)
-    const changedBlog = { ...blog, likes: blog.likes + 1, user: typeof blog.user === 'object' && blog.user !== null ? blog.user.id : blog.user }
+    const changedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+      user:
+        typeof blog.user === 'object' && blog.user !== null
+          ? blog.user.id
+          : blog.user,
+    }
     blogService
       .update(id, changedBlog)
       .then((returnedBlog) => {
         setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
       })
       .catch((error) => {
-        setErrorMessage(`${blog.title} was liked but something went wrong`)
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
+        dispatch(notification(`Error liking blog: ${blog.title}`, 5))
       })
     getblogs()
   }
@@ -194,16 +179,14 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Notification message={errorMessage} />
-        <Notification message={message} />
+        <Notification />
         {loginForm()}
       </div>
     )
   }
   return (
     <div>
-      <Notification message={errorMessage} />
-      <Notification message={message} />
+      <Notification />
       <h2>blogs</h2>
       <div> {user.username} logged in </div>{' '}
       <button onClick={handleLogout}>logout</button>

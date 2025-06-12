@@ -21,9 +21,7 @@ const getAll = () => {
 }
 
 const update = (id, newObject) => {
-  console.log('here')
   const request = axios.put(`${baseUrl}/${id}`, newObject)
-  console.log('got here')
   return request.then((response) => response.data)
 }
 
