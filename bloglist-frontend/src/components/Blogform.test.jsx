@@ -15,9 +15,9 @@ test('renders content and submits correct data', async () => {
       handleTitleChange={handleTitleChange}
       handleAuthorChange={handleAuthorChange}
       handleUrlChange={handleUrlChange}
-      title='a blogs tester name'
-      author='by tester'
-      url='www.test.com'
+      title="a blogs tester name"
+      author="by tester"
+      url="www.test.com"
     />
   )
   const sendButton = screen.getByText('add')

@@ -2,16 +2,15 @@ import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 import userEvent from '@testing-library/user-event'
 
-
 test('renders content', () => {
   const blog = {
     title: 'testi',
     author: 'testaaja',
     url: 'www.testi.fi',
-    likes: 0
+    likes: 0,
   }
 
-  render(<Blog blog={blog}/>)
+  render(<Blog blog={blog} />)
 
   const element = screen.getByText('testi – testaaja')
   expect(element).toBeDefined()
@@ -22,9 +21,8 @@ test('likes rendered when opened', async () => {
     title: 'testi',
     author: 'testaaja',
     url: 'www.testi.fi',
-    likes: 0
+    likes: 0,
   }
-
 
   render(<Blog blog={blog} />)
 
@@ -40,11 +38,11 @@ test('like clicked twise', async () => {
     title: 'testi',
     author: 'testaaja',
     url: 'www.testi.fi',
-    likes: 0
+    likes: 0,
   }
   const mockHandler = vi.fn()
 
-  render(<Blog blog={blog} handlelike={mockHandler}/>)
+  render(<Blog blog={blog} handlelike={mockHandler} />)
 
   const user = userEvent.setup()
   const showbutton = screen.getByText('show')
@@ -52,7 +50,6 @@ test('like clicked twise', async () => {
   const likebutton = screen.getByText('like')
   await user.click(likebutton)
   await user.click(likebutton)
-  
+
   expect(mockHandler.mock.calls).toHaveLength(2)
 })
-

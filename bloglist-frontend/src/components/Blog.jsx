@@ -9,7 +9,12 @@ const Blog = ({ blog, handlelike, handledelete, showDelete }) => {
   }
 
   return (
-    <div style={{ marginBottom: '3px', padding: '3px', border: '1px solid black' }}>
+    <div
+      style={{
+        marginBottom: '3px',
+        padding: '3px',
+        border: '1px solid black',
+      }}>
       <div>
         {blog.title} – {blog.author}
         <button onClick={toggleDetails}>{showDetails ? 'show' : 'show'}</button>
@@ -17,12 +22,16 @@ const Blog = ({ blog, handlelike, handledelete, showDelete }) => {
       {showDetails && (
         <div>
           <div>{blog.url}</div>
-          <div>{blog.likes} likes <button onClick={handlelike}>like</button></div>
+          <div>
+            {blog.likes} likes <button onClick={handlelike}>like</button>
+          </div>
           <div>{blog.user?.name}</div>
           {showDelete && (
-            <div> <button onClick={handledelete}>delete</button></div>
+            <div>
+              {' '}
+              <button onClick={handledelete}>delete</button>
+            </div>
           )}
-
         </div>
       )}
     </div>

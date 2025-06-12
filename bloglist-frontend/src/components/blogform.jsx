@@ -7,28 +7,31 @@ const BlogForm = ({
   handleUrlChange,
   title,
   author,
-  url }) => {
+  url,
+}) => {
   return (
     <div>
       <h2>add blog</h2>
       <form onSubmit={handleSubmit}>
-        <div>Blog title<input
-          value={title}
-          onChange={handleTitleChange}
-          placeholder='blog name'
-        />
+        <div>
+          Blog title
+          <input
+            value={title}
+            onChange={handleTitleChange}
+            placeholder="blog name"
+          />
         </div>
-        <div>Blog Author<input
-          value={author}
-          onChange={handleAuthorChange}
-          placeholder='blog author'
-        />
+        <div>
+          Blog Author
+          <input
+            value={author}
+            onChange={handleAuthorChange}
+            placeholder="blog author"
+          />
         </div>
-        <div>Blog Url<input
-          value={url}
-          onChange={handleUrlChange}
-          placeholder='url'
-        />
+        <div>
+          Blog Url
+          <input value={url} onChange={handleUrlChange} placeholder="url" />
         </div>
         <button type="submit">add</button>
       </form>
@@ -43,7 +46,7 @@ BlogForm.propTypes = {
   handleUrlChange: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired
+  url: PropTypes.string.isRequired,
 }
 
 export default BlogForm
