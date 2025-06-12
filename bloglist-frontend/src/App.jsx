@@ -8,8 +8,7 @@ import loginService from './services/login'
 import BlogForm from './components/blogform'
 import { useDispatch, useSelector } from 'react-redux'
 import { notification } from './reducers/notificationReducer'
-import { initializeBlogs, createNewBlog } from './reducers/blogReducer'
-
+import { initializeBlogs, createNewBlog, updateExistingBlog, deleteBlog } from './reducers/blogReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -37,11 +36,11 @@ const App = () => {
     }
   }, [])
 
-  const getblogs =  () => {
-    dispatch(initializeBlogs())}
+  const getblogs = () => {
+    dispatch(initializeBlogs())
+  }
 
-  const blogs = useSelector(state => state.blogs)
-
+  const blogs = useSelector((state) => state.blogs)
 
   const handleLogout = async (event) => {
     event.preventDefault()
@@ -60,15 +59,18 @@ const App = () => {
       url: newBlogUrl,
     }
     try {
-      blogService.create(blogObject).then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog))
+      dispatch(createNewBlog(blogObject)).then((returnedBlog) => {
         setNewBlogTitle('')
         setNewBlogAuthor('')
         setNewBlogUrl('')
       })
-      dispatch(notification(`a new blog ${newBlogTitle} by ${newBlogAuthor} added`, 5))
+
+      dispatch(
+        notification(`a new blog ${newBlogTitle} by ${newBlogAuthor} added`, 5)
+      )
     } catch (exception) {
-      dispatch(notification('Error adding blog', 5))    }
+      dispatch(notification('Error adding blog', 5))
+    }
   }
 
   const handleLogin = async (event) => {
@@ -87,6 +89,7 @@ const App = () => {
     } catch (exception) {
       dispatch(notification('Wrong username or password', 5))
     }
+    getblogs()
   }
 
   const blogForm = () => {
@@ -139,14 +142,11 @@ const App = () => {
   const handledeleteof = (id) => {
     const blog = blogs.find((n) => n.id === id)
     if (!window.confirm(`Delete '${blog.title}'?`)) return
-    blogService
-      .remove(id)
-      .then(() => {
-        setBlogs(blogs.filter((blog) => blog.id !== id))
-      })
-      .catch((error) => {
-        dispatch(notification(`Error deleting blog: ${blog.title} is not your blog`, 5))
-      })
+    dispatch(deleteBlog(id)).catch((error) => {
+      dispatch(
+        notification(`Error deleting blog: ${blog.title} is not your blog`, 5)
+      )
+    })
     getblogs()
   }
 
@@ -160,15 +160,19 @@ const App = () => {
           ? blog.user.id
           : blog.user,
     }
-    blogService
-      .update(id, changedBlog)
-      .then((returnedBlog) => {
-        setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
-      })
+    dispatch(updateExistingBlog(changedBlog))
       .catch((error) => {
         dispatch(notification(`Error liking blog: ${blog.title}`, 5))
       })
-    getblogs()
+    // blogService
+    //   .update(id, changedBlog)
+    //   .then((returnedBlog) => {
+    //     setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
+    //   })
+    //   .catch((error) => {
+    //     dispatch(notification(`Error liking blog: ${blog.title}`, 5))
+    //   })
+    // getblogs()
   }
 
   const blogowner = (blog) => {
