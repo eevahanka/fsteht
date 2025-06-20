@@ -36,24 +36,6 @@ const LoginForm = ({
           login
         </Button>
       </Form>
-      {/* username
-          <input
-            data-testid="username"
-            value={username}
-            onChange={handleUsernameChange}
-          />
-        </div>
-        <div>
-          password
-          <input
-            data-testid="password"
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form> */}
     </div>
   )
 }
