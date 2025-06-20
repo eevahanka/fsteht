@@ -176,10 +176,10 @@ const App = () => {
   }
 
   const UserById = ({ users }) => {
-  const { id } = useParams()
-  const user = users.find(u => u.id === id)
-  return <User user={user} users={users} />
-}
+    const { id } = useParams()
+    const user = users.find((u) => u.id === id)
+    return <User user={user} users={users} />
+  }
 
   const Home = () => {
     if (user === null) {
@@ -215,7 +215,10 @@ const App = () => {
 
   return (
     <Router>
-      <div> <Link to="/">home</Link></div>
+      <div>
+        {' '}
+        <Link to="/">home</Link>
+      </div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/users/:id" element={<UserById users={users} />} />

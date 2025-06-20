@@ -9,17 +9,16 @@ const Userlist = ({ users }) => {
   return (
     <div>
       <h2>Users</h2>
-      {users.map((user1) => (
-        <div key={user1.id}>
-          <Link to={`/users/${user1.id}`}>{user1.username}</Link>
-          <div>added blogs</div>
-          <ul>
-            {user1.blogs.map((blog) => (
-              <li key={blog.id}>{blog.title}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <table>
+        {users.map((user1) => (
+          <tr key={user1.id}>
+            <td>
+              <Link to={`/users/${user1.id}`}>{user1.username}</Link>
+            </td>
+            <td>{user1.blogs.length} blogs</td>
+          </tr>
+        ))}
+      </table>
     </div>
   )
 }
