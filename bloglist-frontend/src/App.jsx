@@ -19,6 +19,7 @@ import { setUser, loginUser, logoutUser } from './reducers/userReducer'
 import { initializeUsers } from './reducers/usersReducer'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
+import { Table, Form, Button, Alert, Navbar, Nav } from 'react-bootstrap'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -172,7 +173,7 @@ const App = () => {
   }
 
   const routerStyle = {
-    padding: '8px'
+    padding: '8px',
   }
 
   const blogowner = (blog) => {
@@ -192,13 +193,14 @@ const App = () => {
           <Notification />
           {loginForm()}
         </div>
-      )}
+      )
+    }
     if (!blogs || blogs.length === 0) {
       return <div>No blogs found</div>
     }
-    return ( 
-      <div>
-      <h2>blogs</h2>
+    return (
+      <div className="container">
+        <h2>blogs</h2>
         <br></br>
         {blogForm()}
         <br></br>
@@ -211,37 +213,54 @@ const App = () => {
             showDelete={blogowner(blog)}
           />
         ))}
-        </div>)}
+      </div>
+    )
+  }
 
   const Home = () => {
     if (user === null) {
       return (
-        <div>
+        <div className="container">
           <Notification />
           {loginForm()}
           <br></br>
-        welcome to the fullstack blog app
+          welcome to the fullstack blog app
         </div>
       )
     }
     return (
-      <div>
+      <div className="container">
         <Notification />
         <div> {user.username} logged in </div>{' '}
         <button onClick={handleLogout}>logout</button>
         <br></br>
-        welcome to the fullstack blog app
+        <div className="container">
+          welcome to the fullstack blog app welcome to the fullstack blog app
+          welcome to the fullstack blog app welcome to the fullstack blog app
+          welcome to the fullstack blog app welcome to the fullstack blog app
+          welcome to the fullstack blog app welcome to the fullstack blog app
+          welcome to the fullstack blog app welcome to the fullstack blog app
+          welcome to the fullstack blog app welcome to the fullstack blog app
+          welcome to the fullstack blog app welcome to the fullstack blog app
+          welcome to the fullstack blog app
+        </div>
       </div>
     )
   }
 
   return (
     <Router>
-      <div>
+      <div className="container">
         {' '}
-        <Link style={routerStyle} to="/">home</Link>
-        <Link style={routerStyle} to="/users">users</Link>
-        <Link style={routerStyle} to="/blogs">blogs</Link>
+        <Link style={routerStyle} to="/">
+          home
+        </Link>
+        <Link style={routerStyle} to="/users">
+          users
+        </Link>
+        <Link style={routerStyle} to="/blogs">
+          blogs
+        </Link>
       </div>
       <Routes>
         <Route path="/" element={<Home />} />

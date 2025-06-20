@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { Table, Form, Button, Alert, Navbar, Nav } from 'react-bootstrap'
 
 const LoginForm = ({
   handleSubmit,
@@ -11,9 +12,31 @@ const LoginForm = ({
     <div>
       <h2>Login</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          username
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>username</Form.Label>
+          <Form.Control
+            type="text"
+            data-testid="username"
+            name="username"
+            value={username}
+            onChange={handleUsernameChange}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>password</Form.Label>
+          <Form.Control
+            type="password"
+            data-testid="password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          login
+        </Button>
+      </Form>
+      {/* username
           <input
             data-testid="username"
             value={username}
@@ -30,7 +53,7 @@ const LoginForm = ({
           />
         </div>
         <button type="submit">login</button>
-      </form>
+      </form> */}
     </div>
   )
 }

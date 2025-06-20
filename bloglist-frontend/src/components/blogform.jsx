@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { Button, Form } from 'react-bootstrap'
 
 const BlogForm = ({
   handleSubmit,
@@ -12,29 +13,35 @@ const BlogForm = ({
   return (
     <div>
       <h2>add blog</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          Blog title
-          <input
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>Blog title</Form.Label>
+          <Form.Control
             value={title}
             onChange={handleTitleChange}
             placeholder="blog name"
           />
-        </div>
-        <div>
-          Blog Author
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Blog Author</Form.Label>
+          <Form.Control
             value={author}
             onChange={handleAuthorChange}
             placeholder="blog author"
           />
-        </div>
-        <div>
-          Blog Url
-          <input value={url} onChange={handleUrlChange} placeholder="url" />
-        </div>
-        <button type="submit">add</button>
-      </form>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Blog Url</Form.Label>
+          <Form.Control
+            value={url}
+            onChange={handleUrlChange}
+            placeholder="url"
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          add
+        </Button>
+      </Form>
     </div>
   )
 }
