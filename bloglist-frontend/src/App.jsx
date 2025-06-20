@@ -171,6 +171,10 @@ const App = () => {
     })
   }
 
+  const routerStyle = {
+    padding: '8px'
+  }
+
   const blogowner = (blog) => {
     return blog.user.username === user.username
   }
@@ -181,21 +185,20 @@ const App = () => {
     return <User user={user} users={users} />
   }
 
-  const Home = () => {
+  const Blogs = ({ blogs }) => {
     if (user === null) {
       return (
         <div>
           <Notification />
           {loginForm()}
         </div>
-      )
+      )}
+    if (!blogs || blogs.length === 0) {
+      return <div>No blogs found</div>
     }
-    return (
+    return ( 
       <div>
-        <Notification />
-        <h2>blogs</h2>
-        <div> {user.username} logged in </div>{' '}
-        <button onClick={handleLogout}>logout</button>
+      <h2>blogs</h2>
         <br></br>
         {blogForm()}
         <br></br>
@@ -208,7 +211,26 @@ const App = () => {
             showDelete={blogowner(blog)}
           />
         ))}
-        <Userlist users={users} />
+        </div>)}
+
+  const Home = () => {
+    if (user === null) {
+      return (
+        <div>
+          <Notification />
+          {loginForm()}
+          <br></br>
+        welcome to the fullstack blog app
+        </div>
+      )
+    }
+    return (
+      <div>
+        <Notification />
+        <div> {user.username} logged in </div>{' '}
+        <button onClick={handleLogout}>logout</button>
+        <br></br>
+        welcome to the fullstack blog app
       </div>
     )
   }
@@ -217,11 +239,15 @@ const App = () => {
     <Router>
       <div>
         {' '}
-        <Link to="/">home</Link>
+        <Link style={routerStyle} to="/">home</Link>
+        <Link style={routerStyle} to="/users">users</Link>
+        <Link style={routerStyle} to="/blogs">blogs</Link>
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/users/:id" element={<UserById users={users} />} />
+        <Route path="users" element={<Userlist users={users} />} />
+        <Route path="/blogs" element={<Blogs blogs={blogs} />} />
       </Routes>
     </Router>
   )

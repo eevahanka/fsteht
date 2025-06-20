@@ -10,6 +10,13 @@ const Userlist = ({ users }) => {
     <div>
       <h2>Users</h2>
       <table>
+        <thead>
+          <tr>
+            <th> </th>
+            <th>Blogs created</th>
+          </tr>
+        </thead>
+        <tbody>
         {users.map((user1) => (
           <tr key={user1.id}>
             <td>
@@ -18,6 +25,7 @@ const Userlist = ({ users }) => {
             <td>{user1.blogs.length} blogs</td>
           </tr>
         ))}
+        </tbody>
       </table>
     </div>
   )
